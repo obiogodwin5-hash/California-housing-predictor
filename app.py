@@ -256,4 +256,5 @@ def show_price_prediction(housing_data, feature_names):
                    f"{price_diff:+,.0f}")
 
 if __name__ == "__main__":
+
     main()
