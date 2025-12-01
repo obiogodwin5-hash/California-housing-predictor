@@ -24,15 +24,19 @@ The model is trained on the California Housing Dataset from scikit-learn.
 
 @st.cache_data
 def load_data():
-    """Load and preprocess the California housing dataset"""
-    df = fetch_california_housing()
-    housing_data = pd.DataFrame(data=df['data'], columns=df['feature_names'])
-    housing_data["target"] = df["target"]
-    
-    # Apply log transformation to target variable
+    """Load and preprocess the California housing dataset from OpenML"""
+    from sklearn.datasets import fetch_openml
+    df = fetch_openml(name="CaliforniaHousing", as_frame=True)
+
+    housing_data = df.frame.copy()
+    housing_data.rename(columns={"MedHouseVal": "target"}, inplace=True)
+
+    # Log transform target
     housing_data["target_log"] = np.log1p(housing_data["target"])
-    
-    return housing_data, df['feature_names']
+
+    feature_names = [col for col in housing_data.columns if col not in ["target", "target_log"]]
+
+    return housing_data, feature_names
 
 @st.cache_resource
 def train_model(X_train, y_train):
